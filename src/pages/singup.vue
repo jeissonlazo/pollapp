@@ -67,6 +67,9 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Message from 'primevue/message';
 import Card from 'primevue/card';
+import { useAuthStore } from '@/stores/auth.store';
+
+const authStore = useAuthStore();
 
 const resolver = zodResolver(
     z.object({
@@ -107,10 +110,32 @@ const resolver = zodResolver(
     })
 );
 
-const onFormSubmit = ({ valid, values }: { valid: boolean; values: any }) => {
+const onFormSubmit = async ({
+    valid,
+    values,
+}: {
+    valid: boolean;
+    values: any;
+}) => {
     if (!valid) return;
-    console.log('Form submitted:', values);
-    // llamar tu API aquí
+
+    try {
+        const payload = {
+            username: values.username,
+            first_name: values.first_name,
+            last_name: values.last_name,
+            email: values.email,
+            password: values.password,
+        };
+
+        const user = await authStore.register(payload);
+
+        console.log('Usuario creado:', user);
+
+        // router.push('/login');
+    } catch (error) {
+        console.error(error);
+    }
 };
 </script>
 
