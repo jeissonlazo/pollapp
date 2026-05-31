@@ -52,19 +52,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-
-import InputText from 'primevue/inputtext';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
 import { Bell } from '@lucide/vue';
 import Button from 'primevue/button';
-import Badge from 'primevue/badge';
 import OverlayBadge from 'primevue/overlaybadge';
 import Menu from 'primevue/menu';
 import Avatar from 'primevue/avatar';
-
-const search = ref('');
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const unread = ref(3);
 
 const user = ref({
@@ -93,6 +86,10 @@ const menuItems = [
 
 function showMenu(event: Event) {
     menu.value?.toggle(event);
+
+		console.log(import.meta.env.MODE); // development | production
+		console.log(import.meta.env.DEV);  // true en desarrollo
+		console.log(import.meta.env.PROD); // true en producción
 }
 
 function onNotifications() {

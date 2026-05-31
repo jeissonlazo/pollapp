@@ -11,6 +11,7 @@ import AppHeader from './components/AppHeader.vue';
         <RouterLink to="/positions">Go to Home</RouterLink>
         <RouterLink to="/login">Go to Login</RouterLink>
         <RouterLink to="/matches">Go to Matches</RouterLink>
+        <RouterLink to="/signup">Go to Signup</RouterLink>
       </nav>
 
       <RouterView />

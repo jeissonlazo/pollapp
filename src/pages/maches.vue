@@ -4,21 +4,24 @@
         stripedRows
         responsiveLayout="scroll"
         tableStyle="min-width: 900px"
+        paginator 
+        :rows="10" 
+        :rowsPerPageOptions="[5, 10, 20, 50]"
     >
         <Column field="id" header="Id" />
 
         <Column field="schedule" header="Horario">
             <template #body="{ data }">
-                {{ data.schedule }}
+                {{ data.time_local }}
             </template>
         </Column>
 
         <Column header="Partido">
             <template #body="{ data }">
                 <div class="match">
-                    <span>{{ data.homeTeam }}</span>
+                    <span>{{ data.team1 }}</span>
                     <span class="vs">vs</span>
-                    <span>{{ data.awayTeam }}</span>
+                    <span>{{ data.team2 }}</span>
                 </div>
             </template>
         </Column>
@@ -49,12 +52,30 @@
             </template>
         </Column>
 
-        <Column field="result" header="Resultado" />
+        <Column field="result" header="Resultado">
+            <template #body="{ data }">
+                <div class="prediction">
+                    <div v-if="data.resultHome !== null && data.resultAway !== null">
+                        <span class="vs">Sin resultado</span>
+                    </div>
+                    <div v-else>
+                        <span>{{ data.resultHome }}</span>
+                    </div>
+                    <span>-</span>
+                    <div v-if="data.resultHome !== null && data.resultAway !== null">
+                        <span class="vs">Sin resultado</span>
+                    </div>
+                    <div v-else>
+                        <span>{{ data.resultAway }}</span>
+                    </div>
+                </div>
+            </template>
+        </Column>
 
         <Column field="points" header="Puntaje">
             <template #body="{ data }">
                 <Tag
-                    :value="data.points"
+                    :value="0"
                     severity="success"
                 />
             </template>
@@ -63,35 +84,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, } from 'vue';
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import Card from 'primevue/card';
 import InputNumber from 'primevue/inputnumber';
 import Tag from 'primevue/tag';
+import { useMatchesStore } from '@/stores/matches.store';
+import { Match } from '@/types/matches';
 
-const matches = ref([
-    {
-        id: 1,
-        schedule: '2026-06-11 19:00',
-        homeTeam: 'Colombia',
-        awayTeam: 'Brasil',
-        predictionHome: null,
-        predictionAway: null,
-        result: '-',
-        points: 0
-    },
-    {
-        id: 2,
-        schedule: '2026-06-12 15:00',
-        homeTeam: 'Argentina',
-        awayTeam: 'España',
-        predictionHome: null,
-        predictionAway: null,
-        result: '-',
-        points: 0
-    }
-]);
+const store = useMatchesStore()
+const matches = ref<Match[]>(store.matches) ;
+
+onMounted(() => {
+    store.loadMatches();
+});
 </script>
 
 <style scoped>
